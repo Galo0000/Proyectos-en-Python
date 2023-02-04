@@ -1,0 +1,43 @@
+Calle Perticone Izquierda - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_1&streamindex=1
+Acceso Principal - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_2&streamindex=1
+Calle Perticone Derecha - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_3&streamindex=1
+Estacionamiento Lateral - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_4&streamindex=1
+Garita y Acceso salon Ventas - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_5&streamindex=1
+Estacionamiento Techado  - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_6&streamindex=1
+Estacionamiento Techado y Acceso Servicio - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_7&streamindex=1
+Salon de Ventas  - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_8&streamindex=1
+Salon de Ventas - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_9&streamindex=1
+Acceso 1 piso - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_10&streamindex=1
+Salon de Ventas - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_11&streamindex=1
+Salon de Ventas  - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_13&streamindex=1
+Atencion Servicios - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_14&streamindex=1
+Atencion Servicios - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_15&streamindex=1
+Acceso Deposito - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_16&streamindex=1
+Deposito Repuestos - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_17&streamindex=1
+Deposito Repuestos 1 piso - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_20&streamindex=1
+Deposito Repuestos 1 Piso - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_21&streamindex=1
+Taller Servicios - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_22&streamindex=1
+Taller Servicios Lateral Norte - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_23&streamindex=1
+Taller Servicios Lateral Sur - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_24&streamindex=1
+Taller Servicios Lateral Sur - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_25&streamindex=1
+Taller Servicios Lateral Norte - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_26&streamindex=1
+Playa Sector Posterior - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_28&streamindex=1
+Acceso Deposito Lubricantes - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_31&streamindex=1
+Deposito Marketing y Aceites - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_32&streamindex=1
+Calle Paimun Sur - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_33&streamindex=1
+Calle Paimun Norte - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_34&streamindex=1
+Administracion - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_36&streamindex=1
+Caja - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_37&streamindex=1
+Deposito - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_38&streamindex=1
+Taller Servicios - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_39&streamindex=1
+Lavadero Box3 - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_40&streamindex=1
+Taller de Servicios - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_41&streamindex=1
+ Deposito de Lubricantes - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_42&streamindex=1
+Lavadero Box1 - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_43&streamindex=1
+Lateral Taller Servicios - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_44&streamindex=1
+Lavadero Box2 - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_45&streamindex=1
+Tesoreria  - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_46&streamindex=1
+Planificacion y desarrollo - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_47&streamindex=1
+Acceso Gerencia - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_48&streamindex=1
+Repuestos - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_51&streamindex=1
+Atencion Servic - rtsp://10.10.1.253:3454/Media/Live/Normal?camera=C_52&streamindex=1
