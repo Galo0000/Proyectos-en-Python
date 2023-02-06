@@ -1,10 +1,12 @@
+import sys
+sys.path.append( 'C:/Repositorios/Python' )
 import USERBINANCE
 from binance.client import Client
 import time
 from os import system
 import pandas as pd
 import numpy as np
-import sys
+
 from datetime import datetime
 import os.path
 from websocket import WebSocketApp
@@ -81,20 +83,31 @@ class botrack:
             
             
             
-    #def send_order(self,side,order,qty,price):
-    #    order = client.create_order(
-    #        symbol=self.symbolticker,
-    #        side=side,
-    #        type=ORDER_TYPE_LIMIT,
-    #        timeInForce=TIME_IN_FORCE_GTC,
-    #        quantity=qty,
-    #        price=price)##string
+    def send_order(self,side,order,qty,price):
+        while 1:
+            order = self.client.create_order(
+                symbol=self.symbolticker,
+                side=side,
+                type=order,
+                timeInForce='TIME_IN_FORCE_GTC',
+                quantity=qty,
+                price=price,
+                newOrderRespType='JSON. ACK')
+            
+            status = self.client.get_order(
+                symbol=self.symbolticker,
+                orderId=order["orderId"])
+            time.sleep(1)
+            if status["status"] == 'NEW':
+                break
+            else:
+                continue
+            
     
     #def calculate_lot_size(self,):
     #    q*price = (0.5 + (q*buyprice))/fees
         
         
-    #def run(self):
     def start(self):
         ws = WebSocketApp("wss://stream.binance.com:9443/ws/ethusdt@kline_1m", on_message=self.run)
         ws.run_forever()
