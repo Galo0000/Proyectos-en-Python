@@ -126,7 +126,8 @@ def update_regs():
         
     for a in range(len(regbuys)):
         try:
-            regbuys.at[a,'ganancia'] = _truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2)
+            #regbuys.at[a,'ganancia'] = _truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2)
+            regbuys.ganancia = regbuys.ganancia.apply(_truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2))
         except ValueError:
             pass
 
