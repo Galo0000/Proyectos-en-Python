@@ -9,12 +9,13 @@ import numpy as np
 import win32api as w32
 from datetime import datetime
 import os.path
-from websocket import WebSocketApp
-import json
-import asyncio
+import curses as cs
 
 class botrack:
     def __init__(self):
+        self.cs = cs.initscr()
+        #cs.start_color()
+        #cs.init_pair(1, self.cs.COLOR_YELLOW, self.cs.COLOR_BLACK)
         #self.lot_size = self.calculate_lot_size()
         self.client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
         self.stablecoin = 'USDT'
@@ -27,36 +28,45 @@ class botrack:
         self.preice_up = 0
         self.price_down = 0
         self.price_lock = 0
-        self.price_range = 100
+        self.rack_diff = 50
+        self.price_range = self.rack_diff / 4
         self.inv_per_rack = 15
         self.fees = 0.001
         self.real_inv = self.inv_per_rack * (1+self.fees)
         self.minprice = 0
     
     def run(self):
-        system('cls')
+        n = 4
+        self.cs.refresh()
         self.price = float(self.client.get_symbol_ticker(symbol=self.symbolticker)['price'])
         self.price = np.round(self.price,2)
         self.price_up = self.price + self.price_range
         self.price_down = self.price - self.price_range
-        print(self.price_up)
-        print(self.price)
-        print(self.price_down)
-        print('**************************************************')
+        self.cs.addstr(0,0,str(self.price_up))
+        self.cs.addstr(1,0,str(self.price))
+        self.cs.addstr(2,0,str(self.price_down))
+        self.cs.addstr(3,0,'**************************************************')
    
         for enum, price in enumerate(self.rack):
             if price == self.minprice:
                 break
             else:
-                print(price)
-                if self.price < price and self.price > self.rack[enum]:
-                    print('*')
-                if price < self.price_up and price > self.price:
-                    self.price_lock = price
-                    print('looooooock',self.price_lock)
-                if price < self.price and price > self.price_down:
-                    self.price_lock = price
-                    print('looooooock',self.price_lock)
+                try:
+                    n+=1
+                    self.cs.addstr(n,0,str(price)+'                           ')
+                    if price > self.price > self.rack[enum+1]:
+                        n+=1
+                        self.cs.addstr(n,0,'   *                         ')
+                    if self.price_up > price > self.price:
+                        n+=1
+                        self.price_lock = price
+                        self.cs.addstr(n,0,'looooooock to sell  '+str(self.price_lock),)
+                    if self.price > price > self.price_down:
+                        n+=1
+                        self.price_lock = price
+                        self.cs.addstr(n,0,'looooooock to buy '+str(self.price_lock))
+                except cs.error:
+                    pass
 
                 
     def get_rack_list(self):
@@ -69,7 +79,8 @@ class botrack:
         if not os.path.isfile('rack.npy'):  
             while temp > self.minprice:
                 qty = self.inv_per_rack / self.minprice
-                temp -= 300 #((qty * price)*self.fees) - self.real_inv
+                temp -= self.rack_diff #((qty * price)*self.fees) - self.real_inv
+                temp = np.trunc(temp)
                 self.rack = np.append(self.rack,temp)
            
             #np.save('rack.npy', self.rack)
@@ -106,8 +117,8 @@ class botrack:
     #    q*price = (0.5 + (q*buyprice))/fees
         
     
-    def update_time():
-        now = w32.GetSystemTimeAsFileTime()
+    def update_time(self):
+        now = w32.getsystem
         seconds = now // 10000000 - 11644473600
 
         # Actualiza la hora del sistema utilizando SetSystemTime()
@@ -119,6 +130,11 @@ class botrack:
         
 bot = botrack()
 bot.get_rack_list()
+#n = 0
 while True:
+    #n+=1
     time.sleep(1)
     bot.run()
+    #if n == 100:
+    #    bot.update_time()
+    #    n = 0

@@ -116,8 +116,13 @@ def _roundplaces_():
     symbolinfo = client.get_symbol_info(symbolTicker)
     decimalprice_local = symbolinfo['filters'][0]['tickSize']
     roundprice = (decimalprice_local.find('1'))-1
-    decimalqty_local = symbolinfo['filters'][2]['stepSize']
-    roundqty = (decimalqty_local.find('1'))-1
+    
+    step_size = None
+    for f in symbolinfo['filters']:
+        if f['filterType'] == 'LOT_SIZE':
+            step_size = f['stepSize']
+            break
+    roundqty = (step_size.find('1'))-1
     
     roundplaceinfo = {'roundprice':roundprice, 'roundqty':roundqty}
     return roundplaceinfo
@@ -125,13 +130,32 @@ def _roundplaces_():
 
 def update_regs():
     global regbuys
-        
-    for a in range(len(regbuys)):
-        try:
-            #regbuys.at[a,'ganancia'] = _truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2)
-            regbuys.ganancia = regbuys.ganancia.apply(np.round((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2))
-        except ValueError:
-            pass
+    
+    quantity = regbuys['qty']
+    initial_investment = regbuys['inversion']
+
+    # calcular la ganancia en una sola operación
+    cost = quantity * paux * (1 - fees)
+    profit = np.round(cost - initial_investment, 2)
+
+    # asignar la ganancia al DataFrame
+    regbuys['ganancia'] = profit
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    #for a in range(len(regbuys)):
+    #    try:
+    #        #regbuys.at[a,'ganancia'] = _truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2)
+    #        regbuys.ganancia = regbuys.ganancia.apply(_truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2))
+    #    except ValueError:
+    #        pass
 
 def _nextbuy_():
     global paux,prev_symbolPrice,status
