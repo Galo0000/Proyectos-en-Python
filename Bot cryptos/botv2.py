@@ -1,5 +1,7 @@
-import USERBINANCE
 from binance.client import Client
+import sys
+sys.path.append( 'C:/Repositorios/Python' )
+import USERBINANCE
 #import matplotlib.pyplot as plt
 #from matplotlib.animation import FuncAnimation
 import time
@@ -127,7 +129,7 @@ def update_regs():
     for a in range(len(regbuys)):
         try:
             #regbuys.at[a,'ganancia'] = _truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2)
-            regbuys.ganancia = regbuys.ganancia.apply(_truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2))
+            regbuys.ganancia = regbuys.ganancia.apply(np.round((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2))
         except ValueError:
             pass
 
