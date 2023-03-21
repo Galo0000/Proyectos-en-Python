@@ -131,31 +131,11 @@ def _roundplaces_():
 def update_regs():
     global regbuys
     
-    quantity = regbuys['qty']
-    initial_investment = regbuys['inversion']
-
-    # calcular la ganancia en una sola operación
-    cost = quantity * paux * (1 - fees)
-    profit = np.round(cost - initial_investment, 2)
-
-    # asignar la ganancia al DataFrame
-    regbuys['ganancia'] = profit
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    #for a in range(len(regbuys)):
-    #    try:
-    #        #regbuys.at[a,'ganancia'] = _truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2)
-    #        regbuys.ganancia = regbuys.ganancia.apply(_truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2))
-    #    except ValueError:
-    #        pass
+    for a in range(len(regbuys)):
+        try:
+            regbuys.at[a,'ganancia'] = _truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2)
+        except ValueError:
+            pass
 
 def _nextbuy_():
     global paux,prev_symbolPrice,status
@@ -695,7 +675,7 @@ def _quantity_():
 
     if status == 'vd':
         tempq = 0
-        for t in range(0,len(regbuys)): 
+        for t in range(len(regbuys)): 
             if regbuys.iloc[t]['ganancia'] > tol:
                 tempq += regbuys.iloc[t]['qty']
         if tempq == 0:

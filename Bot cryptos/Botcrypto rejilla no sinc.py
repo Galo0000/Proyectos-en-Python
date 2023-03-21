@@ -6,10 +6,13 @@ import time
 from os import system
 import pandas as pd
 import numpy as np
-import win32api as w32
+import win32api
+import win32con
+import ntplib
 from datetime import datetime
 import os.path
 import curses as cs
+import subprocess
 
 class botrack:
     def __init__(self):
@@ -28,8 +31,8 @@ class botrack:
         self.preice_up = 0
         self.price_down = 0
         self.price_lock = 0
-        self.rack_diff = 50
-        self.price_range = self.rack_diff / 4
+        self.rack_diff = 200
+        self.price_range = self.rack_diff / 6
         self.inv_per_rack = 15
         self.fees = 0.001
         self.real_inv = self.inv_per_rack * (1+self.fees)
@@ -40,8 +43,8 @@ class botrack:
         self.cs.refresh()
         self.price = float(self.client.get_symbol_ticker(symbol=self.symbolticker)['price'])
         self.price = np.round(self.price,2)
-        self.price_up = self.price + self.price_range
-        self.price_down = self.price - self.price_range
+        self.price_up = np.round(self.price + self.price_range,2)
+        self.price_down = np.round(self.price - self.price_range,2)
         self.cs.addstr(0,0,str(self.price_up))
         self.cs.addstr(1,0,str(self.price))
         self.cs.addstr(2,0,str(self.price_down))
@@ -93,24 +96,20 @@ class botrack:
             
             
     def send_order(self,side,order,qty,price):
-        while 1:
-            order = self.client.create_order(
-                symbol=self.symbolticker,
-                side=side,
-                type=order,
-                timeInForce='TIME_IN_FORCE_GTC',
-                quantity=qty,
-                price=price,
-                newOrderRespType='JSON. ACK')
-            
-            status = self.client.get_order(
-                symbol=self.symbolticker,
-                orderId=order["orderId"])
-            time.sleep(1)
-            if status["status"] == 'NEW':
-                break
-            else:
-                continue
+        order = self.client.create_order(
+            symbol=self.symbolticker,
+            side=side,
+            type=order,
+            timeInForce='TIME_IN_FORCE_GTC',
+            quantity=qty,
+            price=price)
+        
+        time.sleep(1)
+        if order['status'] == 'FILLED':
+            return 'Complete'
+        else:
+            return 'Failed'
+
             
     
     #def calculate_lot_size(self,):
@@ -118,12 +117,18 @@ class botrack:
         
     
     def update_time(self):
-        now = w32.getsystem
-        seconds = now // 10000000 - 11644473600
+        # Obtener la hora actual desde el servidor de tiempo
+        ntp_client = ntplib.NTPClient()
+        response = ntp_client.request('time.windows.com')
+        ntp_time = datetime.fromtimestamp(response.tx_time)
+        
+        # Convertir la hora a un formato compatible con Windows
+        system_time = ntp_time.strftime('%m/%d/%Y %I:%M:%S %p')
+        
+        # Establecer la hora del sistema en Windows
+        win32api.SetSystemTime(int(ntp_time.year), int(ntp_time.month), int(ntp_time.weekday()), int(ntp_time.day), int(ntp_time.hour), int(ntp_time.minute), int(ntp_time.second), 0)
 
-        # Actualiza la hora del sistema utilizando SetSystemTime()
-        w32.SetSystemTime(
-        seconds)
+        print("La hora del sistema ha sido actualizada a:", system_time)
 
   
         
@@ -135,6 +140,3 @@ while True:
     #n+=1
     time.sleep(1)
     bot.run()
-    #if n == 100:
-    #    bot.update_time()
-    #    n = 0
