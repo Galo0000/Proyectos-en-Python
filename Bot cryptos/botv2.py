@@ -30,11 +30,6 @@ rsimin = 20
 test = False
 generator = False
 klinesave = False
-################# GRAFICO ####################
-################# VARIABLES ##################
-minprice = 1700
-maxprice = 4868
-#flags = {'1':'','2':'','3':'','4':''}
 prev_basecoin = 0
 prev_tradecoin = 0
 balance = 0
@@ -133,39 +128,10 @@ def update_regs():
     
     for a in range(len(regbuys)):
         try:
-            regbuys.at[a,'ganancia'] = _truncate_((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2)
+            regbuys.at[a,'ganancia'] = _trc((((regbuys.iloc[a]['qty']*paux)*fees)-regbuys.iloc[a]['inversion']),2)
         except ValueError:
             pass
 
-def _nextbuy_():
-    global paux,prev_symbolPrice,status
-    status = 'cd'
-    indicadores = _indicators_()
-    paux = _truncate_((indicadores['closeprice'] * ppbuy),rounds['roundprice'])
-    while 1:
-        scr.clear()
-        indicadores = _indicators_()
-        update_regs()
-        quantity = _quantity_()
-        _interface_()
-
-        if indicadores['closeprice'] > paux:
-            break
-        if indicadores['closeprice'] < prev_symbolPrice:
-            paux = _truncate_((indicadores['closeprice'] * ppbuy),rounds['roundprice'])
-            prev_symbolPrice = indicadores['closeprice']
-            _timesleep_()
-            continue
-        else:
-            _timesleep_()
-            continue
-            
-    order_inputdata = {'type':'buy'
-                       ,'pair':symbolTicker
-                       ,'paux':paux
-                       ,'qty':quantity}
-    _order_(order_inputdata)
-    _timesleep_()
 
 def _valuebuy_(value):
     result = 0
@@ -229,7 +195,7 @@ def _zones_():
         indicadores = _indicators_()
         tempdfmin = _valuebuy_('min')
         prev_symbolPrice = indicadores['closeprice']
-        paux = _truncate_((indicadores['closeprice'] * ppsell),rounds['roundprice'])
+        paux = _trc((indicadores['closeprice'] * ppsell),rounds['roundprice'])
         update_regs()
         _interface_()
         ########## CONDITIONS ##############################################
@@ -245,13 +211,13 @@ def _zones_():
                 ,indicadores['MACD'] > 0]
         
         if all(tocd):
-            paux = _truncate_((indicadores['closeprice'] * ppbuy),rounds['roundprice'])
+            paux = _trc((indicadores['closeprice'] * ppbuy),rounds['roundprice'])
             if indicadores['closeprice'] < (tempdfmin.iloc[0]['buyp']*pnb) and times > 0:
                 _dinbuysell_('cd')
                 status = 'z'
             continue
         elif all(tovd):
-            paux = _truncate_((indicadores['closeprice'] * ppsell),rounds['roundprice'])
+            paux = _trc((indicadores['closeprice'] * ppsell),rounds['roundprice'])
             if tempdfmin.iloc[0]['ganancia'] > tol:
                 _dinbuysell_('vd')
                 status = 'z'
@@ -307,7 +273,7 @@ def _dinbuysell_(ope):
             #    _nextbuy_()
             #    continue
         if all(b):
-            paux = _truncate_((indicadores['closeprice'] * pp),rounds['roundprice'])
+            paux = _trc((indicadores['closeprice'] * pp),rounds['roundprice'])
             prev_symbolPrice = indicadores['closeprice']
             
         else:
@@ -327,7 +293,7 @@ def _order_(order_inputdata):
             qty = order_inputdata['qty']
             time = indicadores['closetime']
             testopid += 1
-            _buyslist_('add',testopid,time,_truncate_(price,rounds['roundprice']),_truncate_((qty * fees),rounds['roundqty']))
+            _buyslist_('add',testopid,time,_trc(price,rounds['roundprice']),_trc((qty * fees),rounds['roundqty']))
 
         if not test:
             orderisbuyer = True
@@ -351,12 +317,12 @@ def _order_(order_inputdata):
             _buyslist_('add',idorder
                        ,time
                        ,price
-                       ,_truncate_(qty,rounds['roundqty'])
-                       ,_truncate_(inv,rounds['roundprice']))
+                       ,_trc(qty,rounds['roundqty'])
+                       ,_trc(inv,rounds['roundprice']))
             
-        _regtrades_(time,_truncate_(price,rounds['roundprice'])
+        _regtrades_(time,_trc(price,rounds['roundprice'])
                             ,0,0,0
-                            ,_truncate_(qty,rounds['roundqty'])
+                            ,_trc(qty,rounds['roundqty'])
                             ,balance['basecoin']
                             ,balance['tradecoin'])
 
@@ -387,24 +353,24 @@ def _order_(order_inputdata):
          
             price = trades['price']
             time = trades['datetime']
-            netprofit = _truncate_((gan - inv),rounds['roundprice'])
+            netprofit = _trc((gan - inv),rounds['roundprice'])
             profit += netprofit
-            _buyslist_('delete',_valuebuy_('lstid'),time,price,_truncate_(qty,rounds['roundqty']),_truncate_(inv,rounds['roundprice']))
+            _buyslist_('delete',_valuebuy_('lstid'),time,price,_trc(qty,rounds['roundqty']),_trc(inv,rounds['roundprice']))
 
 
         _regtrades_(time
                     ,0
-                    ,_truncate_(price,rounds['roundprice'])
-                    ,_truncate_(netprofit,4)
-                    ,_truncate_(profit,4)
-                    ,_truncate_(qty,rounds['roundqty'])
+                    ,_trc(price,rounds['roundprice'])
+                    ,_trc(netprofit,4)
+                    ,_trc(profit,4)
+                    ,_trc(qty,rounds['roundqty'])
                     ,balance['basecoin']
                     ,balance['tradecoin'])
 
 
 ###################################################################################################
 
-def _truncate_(num,n):
+def _trc(num,n):
     i = int(num * (10**n))/(10**n)
     return float(i)
 
@@ -448,17 +414,17 @@ def _interface_():
     row += 1
     scr.addstr(row,0,' MACD = '+str(indicadores['MACD']))
     row += 1
-    scr.addstr(row,0,' BB up   = '+str(_truncate_(indicadores['BBANDS-upper'],rounds['roundprice'])))
+    scr.addstr(row,0,' BB up   = '+str(_trc(indicadores['BBANDS-upper'],rounds['roundprice'])))
     row += 1
-    scr.addstr(row,0,' BB mid  = '+str(_truncate_(indicadores['BBANDS-middle'],rounds['roundprice'])))
+    scr.addstr(row,0,' BB mid  = '+str(_trc(indicadores['BBANDS-middle'],rounds['roundprice'])))
     row += 1
-    scr.addstr(row,0,' BB down = '+str(_truncate_(indicadores['BBANDS-lower'],rounds['roundprice'])))
+    scr.addstr(row,0,' BB down = '+str(_trc(indicadores['BBANDS-lower'],rounds['roundprice'])))
     row += 1
-    scr.addstr(row,0,' STOCHRSI K = '+str(_truncate_(indicadores['STOCHRSI_fastk'],2)))
+    scr.addstr(row,0,' STOCHRSI K = '+str(_trc(indicadores['STOCHRSI_fastk'],2)))
     row += 1
-    scr.addstr(row,0,' STOCHRSI D = '+str(_truncate_(indicadores['STOCHRSI_fastd'],2)))
+    scr.addstr(row,0,' STOCHRSI D = '+str(_trc(indicadores['STOCHRSI_fastd'],2)))
     row += 1
-    scr.addstr(row,0,' ADX = '+str(_truncate_(indicadores['ADX'],2)))
+    scr.addstr(row,0,' ADX = '+str(_trc(indicadores['ADX'],2)))
     row += 1
     #scr.addstr(row,0,' flag 4      = '+indicadores['4flag'])
     #row += 1
@@ -473,16 +439,16 @@ def _interface_():
     scr.addstr(row,0," Precio                     " + str(indicadores['closeprice']))
     row += 1
     if status == 'cd' or status == 'vd':
-        scr.addstr(row,0," Precio seteado actual    " + str(_truncate_(paux,rounds['roundprice'])))
+        scr.addstr(row,0," Precio seteado actual    " + str(_trc(paux,rounds['roundprice'])))
         row += 1
-    scr.addstr(row,0," Precio minimo de compra    " + str(_truncate_((_valuebuy_('min').iloc[0]['buyp'] * pnb),rounds['roundprice'])))
+    scr.addstr(row,0," Precio minimo de compra    " + str(_trc((_valuebuy_('min').iloc[0]['buyp'] * pnb),rounds['roundprice'])))
     row += 1
     scr.addstr(row,0,"*******************************")
     row += 1
     if status == 'z':
         scr.addstr(row,0,"Esperando ")
         row += 1
-    scr.addstr(row,0," Ganancia Total          = " + str(_truncate_(regoperations['Ganancia'].sum(),8)))
+    scr.addstr(row,0," Ganancia Total          = " + str(_trc(regoperations['Ganancia'].sum(),8)))
     row += 1
     scr.addstr(row,0,"********************************")
     row += 1
@@ -525,7 +491,7 @@ def _balance_():
     time.sleep(1)
     tradecoin_local = float(client.get_asset_balance(tradecoin, recvWindow=50000)['free'])
     time.sleep(1)
-    balance_local = {'basecoin': _truncate_(basecoin_local,2),'tradecoin': tradecoin_local}
+    balance_local = {'basecoin': _trc(basecoin_local,2),'tradecoin': tradecoin_local}
     return balance_local
 
 ####################### Obtiene indicadores con libreria talib y numpy ######################################
@@ -588,22 +554,22 @@ def _indicators_():
             #servertime_local = datetime.fromtimestamp((servertimems_local/1000))
             
             #####################################
-            temptotal = {'closeprice': _truncate_(close_local[-1],rounds['roundprice'])
+            temptotal = {'closeprice': _trc(close_local[-1],rounds['roundprice'])
                         ,'closetime': closetime_local
                         #,'servertime': servertime_local
-                        ,'BBANDS-upper': _truncate_(upper[-1],rounds['roundprice'])
-                        ,'BBANDS-middle': _truncate_(middle[-1],rounds['roundprice'])
-                        ,'BBANDS-lower': _truncate_(lower[-1],rounds['roundprice'])
+                        ,'BBANDS-upper': _trc(upper[-1],rounds['roundprice'])
+                        ,'BBANDS-middle': _trc(middle[-1],rounds['roundprice'])
+                        ,'BBANDS-lower': _trc(lower[-1],rounds['roundprice'])
                         #,'DC-MAX': MAX[-1]
                         #,'DC-MIN': MIN[-1]
                         #,'DC-CENTRE': CENTRE
                         #,'tendencia': modelo[0]
-                        ,'RSI': _truncate_(rsi_local[-1],2)
+                        ,'RSI': _trc(rsi_local[-1],2)
                         ,'ADX': adx_local[-1]
                         #,'+DI': POSDI_local[-1]
                         #,'-DI': NEGDI_local[-1]
-                        ,'STOCHRSI_fastk': _truncate_(fastk[-1],0)
-                        ,'STOCHRSI_fastd': _truncate_(fastd[-1],0)
+                        ,'STOCHRSI_fastk': _trc(fastk[-1],0)
+                        ,'STOCHRSI_fastd': _trc(fastd[-1],0)
                         #,'+DM': POSDM_local[-1]
                         #,'-DM': NEGDM_local[-1]
                         #,'STOCH_slowk': slowk[-1]
@@ -612,7 +578,7 @@ def _indicators_():
                         #,'EMA4': _truncate_(ema4_local[-1],rounds['roundprice'])
                         #,'EMA9': _truncate_(ema9_local[-1],rounds['roundprice'])
                         #,'EMA18': _truncate_(ema18_local[-1],rounds['roundprice'])
-                        ,'MACD': _truncate_(macd_local[-1][-1],0)
+                        ,'MACD': _trc(macd_local[-1][-1],0)
                         #,'4flag': flags['4']
                         #,'3flag': flags['3']
                         #,'2flag': flags['2']
@@ -621,20 +587,20 @@ def _indicators_():
             if klinesave == True:
                 timenow = str(datetime.now())
                 df = pd.DataFrame({'Date': [timenow[:timenow.rfind(".")]]
-                                      ,'Open': [_truncate_(klines[-1,1],rounds['roundprice'])]
-                                      ,'High': [_truncate_(klines[-1,2],rounds['roundprice'])]
-                                      ,'Low': [_truncate_(klines[-1,3],rounds['roundprice'])]
-                                      ,'Close': [_truncate_(klines[-1,4],rounds['roundprice'])]
-                                      ,'Volume': [_truncate_(klines[-1,5],2)]
-                                      ,'EMA4': [_truncate_(ema4_local[-1],rounds['roundprice'])]
-                                      ,'EMA9': [_truncate_(ema9_local[-1],rounds['roundprice'])]
-                                      ,'EMA18': [_truncate_(ema18_local[-1],rounds['roundprice'])]
-                                      ,'RSI': [_truncate_(rsi_local[-1],0)]
-                                      ,'STOCHRSIK': [_truncate_(fastk[-1],0)]
-                                      ,'STOCHRSID': [_truncate_(fastd[-1],0)]
-                                      ,'BBUPPER': [_truncate_(upper[-1],rounds['roundprice'])]
-                                      ,'BBMIDDLE': [_truncate_(middle[-1],rounds['roundprice'])]
-                                      ,'BBLOWER': [_truncate_(lower[-1],rounds['roundprice'])]
+                                      ,'Open': [_trc(klines[-1,1],rounds['roundprice'])]
+                                      ,'High': [_trc(klines[-1,2],rounds['roundprice'])]
+                                      ,'Low': [_trc(klines[-1,3],rounds['roundprice'])]
+                                      ,'Close': [_trc(klines[-1,4],rounds['roundprice'])]
+                                      ,'Volume': [_trc(klines[-1,5],2)]
+                                      ,'EMA4': [_trc(ema4_local[-1],rounds['roundprice'])]
+                                      ,'EMA9': [_trc(ema9_local[-1],rounds['roundprice'])]
+                                      ,'EMA18': [_trc(ema18_local[-1],rounds['roundprice'])]
+                                      ,'RSI': [_trc(rsi_local[-1],0)]
+                                      ,'STOCHRSIK': [_trc(fastk[-1],0)]
+                                      ,'STOCHRSID': [_trc(fastd[-1],0)]
+                                      ,'BBUPPER': [_trc(upper[-1],rounds['roundprice'])]
+                                      ,'BBMIDDLE': [_trc(middle[-1],rounds['roundprice'])]
+                                      ,'BBLOWER': [_trc(lower[-1],rounds['roundprice'])]
                                       })
                 df.to_csv('realtimeklineeth1h.csv', index=False, header=False, mode='a')
             break
@@ -671,7 +637,7 @@ def _quantity_():
     quantity = 0
     if status == 'cd':
         tempqty = (int(balance['basecoin'])/times)/paux
-        quantity = _truncate_(tempqty,rounds['roundqty'])
+        quantity = _trc(tempqty,rounds['roundqty'])
 
     if status == 'vd':
         tempq = 0
@@ -682,7 +648,7 @@ def _quantity_():
             tempdfmin = _valuebuy_('min')
             tempq = tempdfmin.iloc[0]['qty']
                     
-        quantity = _truncate_(tempq,rounds['roundqty'])
+        quantity = _trc(tempq,rounds['roundqty'])
     return quantity
         
 

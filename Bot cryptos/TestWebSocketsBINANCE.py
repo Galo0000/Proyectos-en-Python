@@ -1,43 +1,30 @@
-import websocket
-import json
+from binance.websocket import BinanceSocketManager
+from binance.client import Client
+import sys
+sys.path.append( 'C:/Repositorios/Python' )
+import USERBINANCE
 
-# Función para procesar mensajes recibidos a través del WebSocket
-def on_message(ws, message):
-    data = json.loads(message)
-    # Verificar si el mensaje es una actualización de balance
-    if 'e' in data and data['e'] == 'balanceUpdate':
-        # Imprimir el nuevo estado del balance
-        print(f"Nuevo balance: {data['B'][0]['f']}")
-    # Verificar si el mensaje es una actualización de precio
-    if 'e' in data and data['e'] == 'kline' and data['s'] == 'ETHUSDT':
-        # Imprimir el nuevo precio de Ethereum
-        print(f"Nuevo precio de Ethereum: {data['k']['c']}")
+# Creamos una instancia del cliente de Binance y nos autenticamos
+client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET)
 
-# Función para manejar errores de conexión
-def on_error(ws, error):
-    print(error)
+# Creamos una instancia del Socket Manager
+socket_manager = BinanceSocketManager(client)
 
-# Función para manejar el cierre de la conexión
-def on_close(ws):
-    print("Conexión cerrada.")
+# Definimos una función de devolución de llamada para procesar las actualizaciones de precios
+def process_price_message(msg):
+    print(f"Precio de {msg['s']}: {msg['c']}")
 
-# Función para manejar la apertura de la conexión
-def on_open(ws):
-    print("Conexión abierta.")
-    # Suscribirse a actualizaciones de balance
-    ws.send(json.dumps({'method': 'SUBSCRIBE', 'params': ['balanceUpdate'], 'id': 1}))
-    # Suscribirse a actualizaciones de precios de Ethereum
-    ws.send(json.dumps({'method': 'SUBSCRIBE', 'params': ['ethusdt@kline_1m'], 'id': 2}))
+# Definimos una función de devolución de llamada para procesar las actualizaciones de saldo
+def process_balance_message(msg):
+    print(f"Saldo de {msg['a']} en {msg['B']}: {msg['d']['w']} {msg['d']['a']}")
 
-# URL del WebSocket de Binance para recibir actualizaciones de balance y precios de Ethereum
-websocket_url = 'wss://stream.binance.com:9443/ws'
+# Nos suscribimos a los canales de WebSocket para recibir actualizaciones de precios y cambios de saldo
+price_socket = socket_manager.start_symbol_ticker_socket('BTCUSDT', process_price_message)
+balance_socket = socket_manager.start_user_socket(process_balance_message)
 
-# Crear una instancia del WebSocket
-ws = websocket.WebSocketApp(websocket_url,
-                            on_message = on_message,
-                            on_error = on_error,
-                            on_close = on_close,
-                            on_open = on_open)
+# Iniciamos el Socket Manager
+socket_manager.start()
 
-# Ejecutar el WebSocket en segundo plano
-ws.run_forever()
+# Mantenemos la ejecución del programa
+while True:
+    pass

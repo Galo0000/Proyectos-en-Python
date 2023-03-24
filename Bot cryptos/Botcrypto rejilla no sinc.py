@@ -100,16 +100,18 @@ class botrack:
             symbol=self.symbolticker,
             side=side,
             type=order,
-            timeInForce='TIME_IN_FORCE_GTC',
+            timeInForce='GTC',
             quantity=qty,
             price=price)
-        
-        time.sleep(1)
-        if order['status'] == 'FILLED':
-            return 'Complete'
-        else:
-            return 'Failed'
+        order_id = order
 
+        with open('order_id.txt', 'w') as f:
+            f.write(str(order_id))
+
+    def cancel_order(self,order_id):
+        cancelled_order = self.client.cancel_order(
+            symbol=self.symbolticker,
+            orderId=order_id)
             
     
     #def calculate_lot_size(self,):
@@ -134,9 +136,12 @@ class botrack:
         
         
 bot = botrack()
-bot.get_rack_list()
+#bot.cancel_order(12948258563)
+bot.send_order('BUY','LIMIT',0.0266,1500)
+#bot.update_time()
+#bot.get_rack_list()
 #n = 0
-while True:
+#while True:
     #n+=1
-    time.sleep(1)
-    bot.run()
+#    time.sleep(1)
+#    bot.run()
