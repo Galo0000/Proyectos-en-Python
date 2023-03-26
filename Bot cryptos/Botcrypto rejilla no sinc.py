@@ -105,8 +105,8 @@ class botrack:
             price=price)
         order_id = order
 
-        with open('order_id.txt', 'w') as f:
-            f.write(str(order_id))
+        with open('order_id.txt', 'a') as f:
+            f.write(str(order_id)+ "\n")
 
     def cancel_order(self,order_id):
         cancelled_order = self.client.cancel_order(
@@ -136,8 +136,8 @@ class botrack:
         
         
 bot = botrack()
-#bot.cancel_order(12948258563)
-bot.send_order('BUY','LIMIT',0.0266,1500)
+bot.cancel_order(12959049604)
+#bot.send_order('BUY','LIMIT',0.0266,1500)
 #bot.update_time()
 #bot.get_rack_list()
 #n = 0
