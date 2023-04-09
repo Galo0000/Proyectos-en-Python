@@ -24,7 +24,7 @@ ppsell = 0.998
 
 
 pnb = 0.95
-tol = 0.1
+tol = 0.5
 rsimax = 80
 rsimin = 20
 test = False

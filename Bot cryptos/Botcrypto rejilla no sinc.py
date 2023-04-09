@@ -3,16 +3,13 @@ sys.path.append( 'C:/Repositorios/Python' )
 import USERBINANCE
 from binance.client import Client
 import time
-from os import system
 import pandas as pd
 import numpy as np
 import win32api
-import win32con
 import ntplib
 from datetime import datetime
 import os.path
 import curses as cs
-import subprocess
 
 class botrack:
     def __init__(self):
@@ -31,12 +28,14 @@ class botrack:
         self.preice_up = 0
         self.price_down = 0
         self.price_lock = 0
-        self.rack_diff = 200
+        self.rack_diff = 25
         self.price_range = self.rack_diff / 6
         self.inv_per_rack = 15
         self.fees = 0.001
         self.real_inv = self.inv_per_rack * (1+self.fees)
-        self.minprice = 0
+        self.n = 0
+        self.prices = []
+        self.dates = []
     
     def run(self):
         n = 4
@@ -49,10 +48,9 @@ class botrack:
         self.cs.addstr(1,0,str(self.price))
         self.cs.addstr(2,0,str(self.price_down))
         self.cs.addstr(3,0,'**************************************************')
-   
         for enum, price in enumerate(self.rack):
-            if price == self.minprice:
-                break
+            if enum == 0:
+                continue
             else:
                 try:
                     n+=1
@@ -70,39 +68,44 @@ class botrack:
                         self.cs.addstr(n,0,'looooooock to buy '+str(self.price_lock))
                 except cs.error:
                     pass
+                self.cs.refresh()
 
                 
     def get_rack_list(self):
-        hklines = np.array(self.client.get_klines(symbol=self.symbolticker, interval=Client.KLINE_INTERVAL_1MONTH,limit=15)).astype(np.float64)
+        hklines = np.array(self.client.get_klines(symbol=self.symbolticker, interval=Client.KLINE_INTERVAL_1MONTH,limit=6)).astype(np.float64)
         maxprice = hklines[:,2].max()
         print(maxprice)
-        self.minprice = hklines[:,3].min()
-        print(self.minprice)
+        minprice = hklines[:,3].min()
+        print(minprice)
         temp = maxprice
         if not os.path.isfile('rack.npy'):  
-            while temp > self.minprice:
-                qty = self.inv_per_rack / self.minprice
+            while temp > minprice:
+                qty = self.inv_per_rack / minprice
                 temp -= self.rack_diff #((qty * price)*self.fees) - self.real_inv
                 temp = np.trunc(temp)
                 self.rack = np.append(self.rack,temp)
            
-            #np.save('rack.npy', self.rack)
+            np.save('rack.npy', self.rack)
             print(self.rack)
         else:
             self.rack = np.load('rack.npy', allow_pickle = True)
             
             
-            
-            
-            
-    def send_order(self,side,order,qty,price):
-        order = self.client.create_order(
-            symbol=self.symbolticker,
-            side=side,
-            type=order,
-            timeInForce='GTC',
-            quantity=qty,
-            price=price)
+    def send_order(self,side,order,qty,price=None):
+        if order == 'MARKET':
+            order = self.client.create_order(
+                symbol=self.symbolticker,
+                side=side,
+                type=order,
+                quantity=qty)
+        else:
+            order = self.client.create_order(
+                symbol=self.symbolticker,
+                side=side,
+                type=order,
+                timeInForce='GTC',
+                quantity=qty,
+                price=price)
         order_id = order
 
         with open('order_id.txt', 'a') as f:
@@ -136,12 +139,12 @@ class botrack:
         
         
 bot = botrack()
-bot.cancel_order(12959049604)
-#bot.send_order('BUY','LIMIT',0.0266,1500)
+#bot.cancel_order(12959049604)
+#bot.send_order('SELL','MARKET',0.0073)
 #bot.update_time()
-#bot.get_rack_list()
+bot.get_rack_list()
 #n = 0
-#while True:
+while True:
     #n+=1
-#    time.sleep(1)
-#    bot.run()
+    time.sleep(1)
+    bot.run()

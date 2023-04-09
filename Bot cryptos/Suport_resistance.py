@@ -29,7 +29,7 @@ while True:
     
     for i in df:
         currentMax = max(Range , default=0)
-        value=round(df[i],2)
+        value=round(df.iloc[0,i],2)
         
         Range=Range[1:9]
         Range.append(value)
