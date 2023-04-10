@@ -1,22 +1,23 @@
 import sys
 sys.path.append( 'C:/Repositorios/Python' )
+sys.path.append( 'H:\Repositorios\Python no github\Bot cryptos' )
 import USERBINANCE
 from binance.client import Client
 import time
 import pandas as pd
 import numpy as np
 import win32api
-import ntplib
+#import ntplib
 from datetime import datetime
 import os.path
 import curses as cs
 
 class botrack:
     def __init__(self):
+        # INTERFAZ
         self.cs = cs.initscr()
-        #cs.start_color()
-        #cs.init_pair(1, self.cs.COLOR_YELLOW, self.cs.COLOR_BLACK)
         #self.lot_size = self.calculate_lot_size()
+        # BINACE LOGIN
         self.client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
         self.stablecoin = 'USDT'
         self.volatilcoin = 'ETH'
@@ -36,6 +37,8 @@ class botrack:
         self.n = 0
         self.prices = []
         self.dates = []
+        self.priceround = self._roundplaces()[0]
+        self.qtyround = self._roundplaces()[1]
     
     def run(self):
         n = 4
@@ -91,25 +94,26 @@ class botrack:
             self.rack = np.load('rack.npy', allow_pickle = True)
             
             
-    def send_order(self,side,order,qty,price=None):
-        if order == 'MARKET':
-            order = self.client.create_order(
-                symbol=self.symbolticker,
-                side=side,
-                type=order,
-                quantity=qty)
-        else:
-            order = self.client.create_order(
+    def send_order(self,side,order,qty,price):
+        result = self.client.create_order(
                 symbol=self.symbolticker,
                 side=side,
                 type=order,
                 timeInForce='GTC',
                 quantity=qty,
                 price=price)
-        order_id = order
+        order = result
 
-        with open('order_id.txt', 'a') as f:
-            f.write(str(order_id)+ "\n")
+        #with open('order_id.txt', 'a') as f:
+        #    f.write(str(order_id)+ "\n")
+        
+        t = str(pd.to_datetime((order['transactTime'] - 10800000), unit='ms'))
+        t = t[:t.rfind(".")]
+        p = self._trc(float(order['price']),self.priceround)
+        q = self._trc(float(order['origQty']),self.qtyround)
+        i = self._trc(qty * price,2)
+        
+        self._regtradeop(True,order['orderId'],t,p,q,i)
 
     def cancel_order(self,order_id):
         cancelled_order = self.client.cancel_order(
@@ -121,30 +125,70 @@ class botrack:
     #    q*price = (0.5 + (q*buyprice))/fees
         
     
-    def update_time(self):
-        # Obtener la hora actual desde el servidor de tiempo
-        ntp_client = ntplib.NTPClient()
-        response = ntp_client.request('time.windows.com')
-        ntp_time = datetime.fromtimestamp(response.tx_time)
+    #def update_time(self):
+    #    # Obtener la hora actual desde el servidor de tiempo
+    #    ntp_client = ntplib.NTPClient()
+    #    response = ntp_client.request('time.windows.com')
+    #    ntp_time = datetime.fromtimestamp(response.tx_time)
         
         # Convertir la hora a un formato compatible con Windows
-        system_time = ntp_time.strftime('%m/%d/%Y %I:%M:%S %p')
+    #    system_time = ntp_time.strftime('%m/%d/%Y %I:%M:%S %p')
         
         # Establecer la hora del sistema en Windows
-        win32api.SetSystemTime(int(ntp_time.year), int(ntp_time.month), int(ntp_time.weekday()), int(ntp_time.day), int(ntp_time.hour), int(ntp_time.minute), int(ntp_time.second), 0)
+    #    win32api.SetSystemTime(int(ntp_time.year), int(ntp_time.month), int(ntp_time.weekday()), int(ntp_time.day), int(ntp_time.hour), int(ntp_time.minute), int(ntp_time.second), 0)
 
-        print("La hora del sistema ha sido actualizada a:", system_time)
+    #    print("La hora del sistema ha sido actualizada a:", system_time)
 
   
+    def _regtrade(self):
+        df = pd.DataFrame(columns=['id_orden', 'Fecha y Hora', 'Precio', 'Cantidad', 'Inversion'])
+        df.to_csv('reg_trades.csv', index=False)
+        return df
         
+    def _regtradeop(self,append,idorder,date,price,qty,inv):
         
+        file = 'reg_trades.csv'
+        
+        if append:
+            df = pd.DataFrame({'id_orden': [idorder],'Fecha y Hora': [date],'Precio': [price],'Cantidad': [qty],'inversion':[inv]})
+            ###### FALTA
+            with open(file, mode='a', newline='') as file:
+                df.to_csv(file, header=(not file.tell()), index=False)
+            
+        if not append:
+            df = pd.read_csv(file)
+            df = df.drop(index=df[df['id_orden'] == idorder].index)
+            df.to_csv(file,index = False)
+            
+    def _roundplaces(self):
+        symbolinfo = self.client.get_symbol_info(self.symbolticker)
+        decimalprice_local = symbolinfo['filters'][0]['tickSize']
+        roundprice = (decimalprice_local.find('1'))-1
+        
+        step_size = None
+        for f in symbolinfo['filters']:
+            if f['filterType'] == 'LOT_SIZE':
+                step_size = f['stepSize']
+                break
+        roundqty = (step_size.find('1'))-1
+        
+        roundplace = (roundprice,roundqty)
+        return roundplace
+    
+    def _trc(self,num,n):
+        i = int(num * (10**n))/(10**n)
+        return i
+            
+            
+            
 bot = botrack()
 #bot.cancel_order(12959049604)
-#bot.send_order('SELL','MARKET',0.0073)
+bot.send_order('BUY','LIMIT',0.0073,1800)
 #bot.update_time()
-bot.get_rack_list()
+#bot.get_rack_list()
+#bot._regtrade()
 #n = 0
-while True:
+#while True:
     #n+=1
-    time.sleep(1)
-    bot.run()
+#    time.sleep(1)
+#    bot.run()

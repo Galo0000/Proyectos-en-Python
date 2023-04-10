@@ -1,6 +1,7 @@
 from binance.client import Client
 import sys
 sys.path.append( 'C:/Repositorios/Python' )
+sys.path.append( 'H:\Repositorios\Python no github\Bot cryptos' )
 import USERBINANCE
 #import matplotlib.pyplot as plt
 #from matplotlib.animation import FuncAnimation
