@@ -13,7 +13,7 @@ client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
 basecoin = 'USDT'
 tradecoin = 'ETH'
 symbolTicker = tradecoin + basecoin
-klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR,limit=50)).astype(np.float64)
+klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_1HOUR,limit=100)).astype(np.float64)
 
 
 df = pd.DataFrame(klines[:, :5],columns=['Date','Open','High','Low','Close'])
@@ -21,7 +21,7 @@ df = pd.DataFrame(klines[:, :5],columns=['Date','Open','High','Low','Close'])
 df['Date'] = np.round(df['Date'],5)
 
 fig, ax = plt.subplots()
-candlestick_ohlc(ax,df.values , width=0.8, colorup='green', colordown='red')
+candlestick_ohlc(ax,df.values , width=10000, colorup='green', colordown='red')
 
 ax.set_title('Gráfico de velas japonesas')
 ax.set_xlabel('Fecha')
