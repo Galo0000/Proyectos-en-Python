@@ -285,6 +285,7 @@ def _dinbuysell_(ope):
 
 def _order_(order_inputdata):
     global balance,testopid,paux,prev_basecoin,prev_tradecoin
+    scr.clear()
     profit = 0
     gan = 0
     if order_inputdata['type'] == 'buy':
