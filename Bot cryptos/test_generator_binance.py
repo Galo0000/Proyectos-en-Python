@@ -2,6 +2,7 @@ from binance.client import Client
 import datetime
 import sys
 sys.path.append( 'C:/Repositorios/Python' )
+sys.path.append( 'H:\Repositorios\Python no github\Bot cryptos' )
 import USERBINANCE
 
 # Inserte aquí su API key y API secret
