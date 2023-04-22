@@ -183,12 +183,12 @@ class botrack:
             
 bot = botrack()
 #bot.cancel_order(12959049604)
-bot.send_order('BUY','LIMIT',0.0073,1800)
+#bot.send_order('BUY','LIMIT',0.0073,1800)
 #bot.update_time()
-#bot.get_rack_list()
+bot.get_rack_list()
 #bot._regtrade()
 #n = 0
-#while True:
+while True:
     #n+=1
-#    time.sleep(1)
-#    bot.run()
+    time.sleep(1)
+    bot.run()
