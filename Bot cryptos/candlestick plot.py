@@ -9,29 +9,43 @@ from binance.client import Client
 import numpy as np
 
 client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
-
+nl = 100
 basecoin = 'USDT'
 tradecoin = 'ETH'
 symbolTicker = tradecoin + basecoin
-klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR,limit=10)).astype(np.float64)
+klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR,limit=nl)).astype(np.float64)
 
 def _sopres(df):
-    val_high = df['High']
+    global nl
+    val_high = df['High'].astype(int)
     #val_Low = df['Low']
     #sop = [df['Low'].loc[0]]
-    res = [0]
+    res = [0]*nl
     n = 0
+    isup = False
+    temp = 0
+    result = []
     for value in val_high:
-        if value > res[n]:
+        if value > temp:
             res[n] = value
-        else:
-            if n+1 == len(res) and value < res[n]:
-                res[n] = value
-                
-            else:
-                res.append(value)
-                n +=1
-    return res
+            isup = True
+        elif isup:
+            isup = False
+            n +=1
+        temp = value
+            
+    for a in res:
+        if a != 0:
+            result.append(a)
+            
+    for i in range(len(result)):
+        result[i] = int(result[i] / 10) * 10
+    
+    
+    result = list(set(result))
+    
+    
+    return result
             
         
 
