@@ -9,7 +9,7 @@ from binance.client import Client
 import numpy as np
 
 client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
-nl = 100
+nl = 200
 basecoin = 'USDT'
 tradecoin = 'ETH'
 symbolTicker = tradecoin + basecoin
@@ -41,11 +41,13 @@ def _sopres(df):
     for i in range(len(result)):
         result[i] = int(result[i] / 10) * 10
     
+    resultfinal = []
+    for n in result:
+        if result.count(n) >= 3 and n not in resultfinal:
+            resultfinal.append(n)
     
-    result = list(set(result))
     
-    
-    return result
+    return resultfinal
             
         
 
