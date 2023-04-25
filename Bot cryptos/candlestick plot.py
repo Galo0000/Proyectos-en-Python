@@ -10,31 +10,38 @@ import numpy as np
 
 client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
 nl = 100
+rep = 1
+cercania = 5
 basecoin = 'USDT'
 tradecoin = 'ETH'
 symbolTicker = tradecoin + basecoin
 klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR,limit=nl)).astype(np.float64)
 
 
-def promedio_cercanos(lista, distancia):
+def _procerc(lista, d):
+    lista.sort()
     promedio = 0
-    contador = 0
-    resultado = []
+    temp = []
+    cercanos = []
     
-    for i in range(1, len(lista)-1):
-        if abs(lista[i]-lista[i-1]) <= distancia and abs(lista[i]-lista[i+1]) <= distancia:
-            promedio += lista[i]
-            contador += 1
+    for i in lista:
+        #temp.append(i)
+        for l in lista:
+            if i != l:
+                if i+d > l > i-d:
+                    if l not in temp:
+                        temp.append(l)
+                else:
+                    if sum(temp) != 0 and len(temp) != 0 and len(temp) >= 3:
+                        promedio = sum(temp)/len(temp)
+                        cercanos.append(int(promedio))
+                        promedio = 0
+                        temp = []
     
-    if contador > 0:
-        promedio /= contador
-        
-    resultado.append(promedio)
     
-    return resultado
+    return cercanos
 
 def _res(df):
-    global nl
     val_high = df['High'].astype(int)
     res = [0]*nl
     n = 0
@@ -54,20 +61,20 @@ def _res(df):
         if a != 0:
             result.append(a)
             
-    for i in range(len(result)):
-        result[i] = int(result[i] / 10) * 10
+    #for i in range(len(result)):
+    #    result[i] = int(result[i] / 10) * 10
+    #resultfinal = []
+    #for n in result:
+    #    if result.count(n) >= 3 and n not in resultfinal:
+    #        resultfinal.append(n)
     
-    #result = promedio_cercanos(result,10)
+    for r in range(rep):
+        result = _procerc(result,cercania)
     
-    resultfinal = []
-    for n in result:
-        if result.count(n) >= 3 and n not in resultfinal:
-            resultfinal.append(n)
-    
-    return resultfinal
+    return result
 
 def _sop(df):
-    global nl
+    global nl,rep
     val_Low = df['Low'].astype(int)
     res = [0]*nl
     n = 0
@@ -87,17 +94,17 @@ def _sop(df):
         if a != 0:
             result.append(a)
             
-    for i in range(len(result)):
-        result[i] = int(result[i] / 10) * 10
+    #for i in range(len(result)):
+    #    result[i] = int(result[i] / 10) * 10
+    #resultfinal = []
+    #for n in result:
+    #    if result.count(n) >= 3 and n not in resultfinal:
+    #        resultfinal.append(n)
     
-    #result = promedio_cercanos(result,5)
+    for r in range(rep):
+        result = _procerc(result,cercania)
     
-    resultfinal = []
-    for n in result:
-        if result.count(n) >= 3 and n not in resultfinal:
-            resultfinal.append(n)
-    
-    return resultfinal
+    return result
             
         
 
@@ -115,15 +122,17 @@ soportes = _sop(df)
 
 
 x = [df['Date'].iloc[0],df['Date'].iloc[-1]]
-
-fig, ax = plt.subplots()
-candlestick_ohlc(ax,df.values , width=10000, colorup='green', colordown='red')
+xcord = df['Date'].iloc[0]
+fig, ax = plt.subplots(figsize=(32, 24))
+candlestick_ohlc(ax,df.values , width=10000000, colorup='green', colordown='red')
 
 for a in resistencias:
     ax.plot(x,[a,a],color='red')
+    ax.text(xcord, a,str(a), ha="left", va="bottom")
     
 for a in soportes:
     ax.plot(x,[a,a],color='green')
+    ax.text(xcord, a,str(a), ha="left", va="bottom")
 
 ax.set_title('Gráfico de velas japonesas')
 ax.set_xlabel('Fecha')
