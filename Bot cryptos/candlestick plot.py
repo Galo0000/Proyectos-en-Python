@@ -27,16 +27,15 @@ def _procerc(lista, d):
     for i in lista:
         #temp.append(i)
         for l in lista:
-            if i != l:
-                if i+d > l > i-d:
-                    if l not in temp:
+            if i+d > l > i-d:
+                if l not in temp:
                         temp.append(l)
-                else:
-                    if sum(temp) != 0 and len(temp) != 0 and len(temp) >= 3:
-                        promedio = sum(temp)/len(temp)
-                        cercanos.append(int(promedio))
-                        promedio = 0
-                        temp = []
+            else:
+                if len(temp) >= 3:
+                    promedio = sum(temp)/len(temp)
+                    cercanos.append(int(promedio))
+                    promedio = 0
+                    temp = []
     
     
     return cercanos
