@@ -11,11 +11,37 @@ import numpy as np
 client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
 nl = 100
 rep = 1
-cercania = 5
+cercania = 3
 basecoin = 'USDT'
 tradecoin = 'ETH'
 symbolTicker = tradecoin + basecoin
 klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR,limit=nl)).astype(np.float64)
+
+def _redo(l):
+    prom = []
+    complete = []
+    for a in l:
+        temp = []
+        for b in l:
+            if b not in complete:
+                if (int(a/10)*10) == (int(b/10)*10):
+                    temp.append(b)
+                    complete.append(b)
+        if len(temp) >= 3:
+            print(temp)
+            prom.append(int(sum(temp)/len(temp)))
+        
+    
+    
+    
+    #for i in range(len(l)):
+    #    l[i] = int(l[i] / 10) * 10
+    #temp = []
+    #for n in l:
+    #    if l.count(n) >= 3 and n not in temp:
+    #        temp.append(n)
+            
+    return prom
 
 
 def _procerc(lista, d):
@@ -31,12 +57,11 @@ def _procerc(lista, d):
                 if l not in temp:
                         temp.append(l)
             else:
-                if len(temp) >= 3:
+                if len(temp) >= 1:
                     promedio = sum(temp)/len(temp)
                     cercanos.append(int(promedio))
                     promedio = 0
                     temp = []
-    
     
     return cercanos
 
@@ -60,15 +85,10 @@ def _res(df):
         if a != 0:
             result.append(a)
             
-    #for i in range(len(result)):
-    #    result[i] = int(result[i] / 10) * 10
-    #resultfinal = []
-    #for n in result:
-    #    if result.count(n) >= 3 and n not in resultfinal:
-    #        resultfinal.append(n)
+    result = _redo(result)
     
-    for r in range(rep):
-        result = _procerc(result,cercania)
+    #for r in range(rep):
+    #    result = _procerc(result,cercania)
     
     return result
 
@@ -93,15 +113,10 @@ def _sop(df):
         if a != 0:
             result.append(a)
             
-    #for i in range(len(result)):
-    #    result[i] = int(result[i] / 10) * 10
-    #resultfinal = []
-    #for n in result:
-    #    if result.count(n) >= 3 and n not in resultfinal:
-    #        resultfinal.append(n)
+    result = _redo(result)
     
-    for r in range(rep):
-        result = _procerc(result,cercania)
+    #for r in range(rep):
+    #    result = _procerc(result,cercania)
     
     return result
             
@@ -133,8 +148,6 @@ for a in soportes:
     ax.plot(x,[a,a],color='green')
     ax.text(xcord, a,str(a), ha="left", va="bottom")
 
-ax.set_title('Gráfico de velas japonesas')
-ax.set_xlabel('Fecha')
-ax.set_ylabel('Precio')
+ax.set_title('ETHUSDT')
 
 plt.show()
