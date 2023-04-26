@@ -15,7 +15,7 @@ cercania = 3
 basecoin = 'USDT'
 tradecoin = 'ETH'
 symbolTicker = tradecoin + basecoin
-klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR,limit=nl)).astype(np.float64)
+klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR ,limit=nl)).astype(np.float64)
 
 def _redo(l):
     prom = []
