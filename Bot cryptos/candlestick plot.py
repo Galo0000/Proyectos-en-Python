@@ -9,32 +9,67 @@ from binance.client import Client
 import numpy as np
 
 client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
+<<<<<<< HEAD
 nl = 50
+=======
+nl = 100
+rep = 1
+cercania = 3
+>>>>>>> 69a276dca1d4e706ccc92880265bacb2e3ce998a
 basecoin = 'USDT'
 tradecoin = 'ETH'
 symbolTicker = tradecoin + basecoin
-klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR,limit=nl)).astype(np.float64)
+klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR ,limit=nl)).astype(np.float64)
 
-
-def promedio_cercanos(lista, distancia):
-    promedio = 0
-    contador = 0
-    resultado = []
-    
-    for i in range(1, len(lista)-1):
-        if abs(lista[i]-lista[i-1]) <= distancia and abs(lista[i]-lista[i+1]) <= distancia:
-            promedio += lista[i]
-            contador += 1
-    
-    if contador > 0:
-        promedio /= contador
+def _redo(l):
+    prom = []
+    complete = []
+    for a in l:
+        temp = []
+        for b in l:
+            if b not in complete:
+                if (int(a/10)*10) == (int(b/10)*10):
+                    temp.append(b)
+                    complete.append(b)
+        if len(temp) >= 3:
+            print(temp)
+            prom.append(int(sum(temp)/len(temp)))
         
-    resultado.append(promedio)
     
-    return resultado
+    
+    
+    #for i in range(len(l)):
+    #    l[i] = int(l[i] / 10) * 10
+    #temp = []
+    #for n in l:
+    #    if l.count(n) >= 3 and n not in temp:
+    #        temp.append(n)
+            
+    return prom
+
+
+def _procerc(lista, d):
+    lista.sort()
+    promedio = 0
+    temp = []
+    cercanos = []
+    
+    for i in lista:
+        #temp.append(i)
+        for l in lista:
+            if i+d > l > i-d:
+                if l not in temp:
+                        temp.append(l)
+            else:
+                if len(temp) >= 1:
+                    promedio = sum(temp)/len(temp)
+                    cercanos.append(int(promedio))
+                    promedio = 0
+                    temp = []
+    
+    return cercanos
 
 def _res(df):
-    global nl
     val_high = df['High'].astype(int)
     res = [0]*nl
     n = 0
@@ -54,20 +89,15 @@ def _res(df):
         if a != 0:
             result.append(a)
             
-    for i in range(len(result)):
-        result[i] = int(result[i] / 10) * 10
+    result = _redo(result)
     
-    #result = promedio_cercanos(result,10)
+    #for r in range(rep):
+    #    result = _procerc(result,cercania)
     
-    resultfinal = []
-    for n in result:
-        if result.count(n) >= 3 and n not in resultfinal:
-            resultfinal.append(n)
-    
-    return resultfinal
+    return result
 
 def _sop(df):
-    global nl
+    global nl,rep
     val_Low = df['Low'].astype(int)
     res = [0]*nl
     n = 0
@@ -87,17 +117,12 @@ def _sop(df):
         if a != 0:
             result.append(a)
             
-    for i in range(len(result)):
-        result[i] = int(result[i] / 10) * 10
+    result = _redo(result)
     
-    #result = promedio_cercanos(result,5)
+    #for r in range(rep):
+    #    result = _procerc(result,cercania)
     
-    resultfinal = []
-    for n in result:
-        if result.count(n) >= 3 and n not in resultfinal:
-            resultfinal.append(n)
-    
-    return resultfinal
+    return result
             
         
 
@@ -115,18 +140,18 @@ soportes = _sop(df)
 
 
 x = [df['Date'].iloc[0],df['Date'].iloc[-1]]
-
-fig, ax = plt.subplots()
-candlestick_ohlc(ax,df.values , width=10000, colorup='green', colordown='red')
+xcord = df['Date'].iloc[0]
+fig, ax = plt.subplots(figsize=(32, 24))
+candlestick_ohlc(ax,df.values , width=10000000, colorup='green', colordown='red')
 
 for a in resistencias:
     ax.plot(x,[a,a],color='red')
+    ax.text(xcord, a,str(a), ha="left", va="bottom")
     
 for a in soportes:
     ax.plot(x,[a,a],color='green')
+    ax.text(xcord, a,str(a), ha="left", va="bottom")
 
-ax.set_title('Gráfico de velas japonesas')
-ax.set_xlabel('Fecha')
-ax.set_ylabel('Precio')
+ax.set_title('ETHUSDT')
 
 plt.show()
