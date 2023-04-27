@@ -9,7 +9,7 @@ from binance.client import Client
 import numpy as np
 
 client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
-nl = 100
+nl = 50
 basecoin = 'USDT'
 tradecoin = 'ETH'
 symbolTicker = tradecoin + basecoin
