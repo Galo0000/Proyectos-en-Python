@@ -18,105 +18,83 @@ symbolTicker = tradecoin + basecoin
 klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR ,limit=nl)).astype(np.float64)
 
 def _redo(l):
+    #prom = []
+    #complete = []
+    #for a in l:
+    #    temp = []
+    #    for b in l:
+    #        if b not in complete:
+    #            if (int(a/10)*10) == (int(b/10)*10):
+    #                temp.append(b)
+    #                complete.append(b)
+    #    if len(temp) >= 3:
+    #        print(temp)
+    #        prom.append(int(sum(temp)/len(temp)))
+            
     prom = []
     complete = []
     for a in l:
         temp = []
         for b in l:
-            if b not in complete:
-                if (int(a/10)*10) == (int(b/10)*10):
+            if b not in temp:
+                inter = np.intersect1d(b, a)
+                if inter.size > 2:
                     temp.append(b)
-                    complete.append(b)
-        if len(temp) >= 3:
-            print(temp)
-            prom.append(int(sum(temp)/len(temp)))
-        
-    
-    
-    
-    #for i in range(len(l)):
-    #    l[i] = int(l[i] / 10) * 10
-    #temp = []
-    #for n in l:
-    #    if l.count(n) >= 3 and n not in temp:
-    #        temp.append(n)
-            
-    return prom
-
-
-def _procerc(lista, d):
-    lista.sort()
-    promedio = 0
-    temp = []
-    cercanos = []
-    
-    for i in lista:
-        #temp.append(i)
-        for l in lista:
-            if i+d > l > i-d:
-                if l not in temp:
-                        temp.append(l)
-            else:
-                if len(temp) >= 1:
-                    promedio = sum(temp)/len(temp)
-                    cercanos.append(int(promedio))
-                    promedio = 0
-                    temp = []
-    
-    return cercanos
+                else:
+                    break
+        for r in temp:
+            arreglo_rango = np.array(r)
+            promedio_rango = np.mean(arreglo_rango)
+            complete.append(promedio_rango)
+        pr
+    return complete
 
 def _res(df):
     val_high = df['High'].astype(int)
-    res = [0]*nl
+    val_o1 = df['Open'].astype(int)
+    val_o2 = df['Close'].astype(int)
+    res = np.zeros(nl, dtype=int)
     n = 0
     isup = False
     temp = 0
-    result = []
-    for value in val_high:
+    result = np.empty(0)
+    for index,value in enumerate(val_high):
         if value > temp:
-            res[n] = value
+            res[n] = np.arange(value,max(val_o1[index],val_o2[index]))
             isup = True
         elif isup:
             isup = False
             n +=1
         temp = value
             
-    for a in res:
-        if a != 0:
-            result.append(a)
+    result = result[np.nonzero(result)]
             
     result = _redo(result)
-    
-    #for r in range(rep):
-    #    result = _procerc(result,cercania)
-    
+
     return result
 
 def _sop(df):
     global nl,rep
     val_Low = df['Low'].astype(int)
-    res = [0]*nl
+    val_o1 = df['Open'].astype(int)
+    val_o2 = df['Close'].astype(int)
+    res = np.zeros(nl, dtype=int)
     n = 0
     isinf = False
     temp = 0
-    result = []
-    for value in val_Low:
+    result = np.empty(0)
+    for index,value in enumerate(val_Low):
         if value < temp:
-            res[n] = value
+            res[n] = np.arange(value,min(val_o1[index],val_o2[index]))
             isinf = True
         elif isinf:
             isinf = False
             n +=1
         temp = value
             
-    for a in res:
-        if a != 0:
-            result.append(a)
+    result = result[np.nonzero(result)]
             
     result = _redo(result)
-    
-    #for r in range(rep):
-    #    result = _procerc(result,cercania)
     
     return result
             
