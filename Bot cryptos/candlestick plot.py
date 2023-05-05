@@ -9,9 +9,13 @@ from binance.client import Client
 import numpy as np
 
 client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
+<<<<<<< HEAD
+nl = 50
+=======
 nl = 100
 rep = 1
 cercania = 3
+>>>>>>> 69a276dca1d4e706ccc92880265bacb2e3ce998a
 basecoin = 'USDT'
 tradecoin = 'ETH'
 symbolTicker = tradecoin + basecoin
