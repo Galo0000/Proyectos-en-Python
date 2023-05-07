@@ -9,13 +9,9 @@ from binance.client import Client
 import numpy as np
 
 client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
-<<<<<<< HEAD
-nl = 50
-=======
-nl = 100
+nl = 25
 rep = 1
 cercania = 3
->>>>>>> 69a276dca1d4e706ccc92880265bacb2e3ce998a
 basecoin = 'USDT'
 tradecoin = 'ETH'
 symbolTicker = tradecoin + basecoin
@@ -50,32 +46,36 @@ def _redo(l):
             arreglo_rango = np.array(r)
             promedio_rango = np.mean(arreglo_rango)
             complete.append(promedio_rango)
-        pr
     return complete
 
 def _res(df):
     val_high = df['High'].astype(int)
     val_o1 = df['Open'].astype(int)
     val_o2 = df['Close'].astype(int)
-    res = np.zeros(nl, dtype=int)
+    res = []
     n = 0
-    isup = False
-    temp = 0
+    agr = True
+    temp = val_high[0]
+    last = val_high[0]
     result = np.empty(0)
     for index,value in enumerate(val_high):
-        if value > temp:
-            res[n] = np.arange(value,max(val_o1[index],val_o2[index]))
-            isup = True
-        elif isup:
-            isup = False
-            n +=1
+        if value < temp and agr:
+            res.append(last)
+            agr = False
+        elif value > temp:
+            last = value
+            agr = True
         temp = value
+        
             
-    result = result[np.nonzero(result)]
+        
+        
+        
+    #result = result[np.nonzero(result)]
             
-    result = _redo(result)
+    #result = _redo(result)
 
-    return result
+    return res
 
 def _sop(df):
     global nl,rep
@@ -114,7 +114,7 @@ df['Date'] = np.round(df['Date'],5)
 
 
 resistencias = _res(df)
-soportes = _sop(df)
+#soportes = _sop(df)
 
 
 x = [df['Date'].iloc[0],df['Date'].iloc[-1]]
@@ -126,9 +126,9 @@ for a in resistencias:
     ax.plot(x,[a,a],color='red')
     ax.text(xcord, a,str(a), ha="left", va="bottom")
     
-for a in soportes:
-    ax.plot(x,[a,a],color='green')
-    ax.text(xcord, a,str(a), ha="left", va="bottom")
+#for a in soportes:
+#    ax.plot(x,[a,a],color='green')
+#    ax.text(xcord, a,str(a), ha="left", va="bottom")
 
 ax.set_title('ETHUSDT')
 
