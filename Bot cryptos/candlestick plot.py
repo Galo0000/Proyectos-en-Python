@@ -49,7 +49,7 @@ def _redo(l):
     return prom
 
 def _res(df):
-    val_high = df['High'].astype(int)
+    val_high = df['High']
     val_o1 = df['Open'].astype(int)
     val_o2 = df['Close'].astype(int)
     res = []
@@ -71,7 +71,7 @@ def _res(df):
 
 def _sop(df):
     global nl,rep
-    val_Low = df['Low'].astype(int)
+    val_Low = df['Low']
     val_o1 = df['Open'].astype(int)
     val_o2 = df['Close'].astype(int)
     sop = []
