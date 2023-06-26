@@ -52,6 +52,7 @@ while(True):
     pyautogui.moveTo(1000, 200)
     time.sleep(0.3)
     screenshot = wincap.get_screenshot()
+    cv.rectangle(screenshot, (1490,31), ((1490+180),(31+793)), (0, 255, 0), 2)
     cv.imshow('eveonline',screenshot)
     for (t,name) in zip(targets,name_target):
         print('Buscando objetivos tipo : '+name)
