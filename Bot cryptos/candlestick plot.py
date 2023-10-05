@@ -1,6 +1,6 @@
 import sys
 sys.path.append( 'C:/Repositorios/Python' )
-sys.path.append( 'H:\Repositorios\Python no github\Bot cryptos' )
+sys.path.append( 'H:/Repositorios/Python no github/Bot cryptos' )
 import USERBINANCE
 import matplotlib.pyplot as plt
 import pandas as pd

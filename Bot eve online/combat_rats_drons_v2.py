@@ -1,8 +1,8 @@
 import cv2 as cv
-import os
 from windowcapture import WindowCapture
 from vision import Vision
 import control
+import os
 import pyautogui
 import time
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -11,7 +11,7 @@ targets = []
 targets_lock = []
 name_target = []
 
-wincap = WindowCapture('EVE - Guileo Galo')
+wincap = WindowCapture('EVE — Guileo Galo')
 
 
 centry = Vision('imgeveonline/centry.jpg')
