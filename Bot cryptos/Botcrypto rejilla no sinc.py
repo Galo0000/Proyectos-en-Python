@@ -6,24 +6,20 @@ from binance.client import Client
 import time
 import pandas as pd
 import numpy as np
-import win32api
-#import ntplib
-from datetime import datetime
 import os.path
 import curses as cs
+import matplotlib.pyplot as plt
+from mplfinance.original_flavor import candlestick_ohlc
 
 class botrack:
     def __init__(self):
         # INTERFAZ
         self.cs = cs.initscr()
-        #self.lot_size = self.calculate_lot_size()
         # BINACE LOGIN
         self.client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
         self.stablecoin = 'USDT'
         self.volatilcoin = 'ETH'
         self.symbolticker = self.volatilcoin + self.stablecoin
-        #self.reglocalbuys = pd.read_csv()
-        #self.regonlinebuys =
         self.rack = np.empty([1, 1], dtype=float)
         self.price = 0
         self.preice_up = 0
@@ -34,9 +30,6 @@ class botrack:
         self.inv_per_rack = 15
         self.fees = 0.001
         self.real_inv = self.inv_per_rack * (1+self.fees)
-        self.n = 0
-        self.prices = []
-        self.dates = []
         self.priceround = self._roundplaces()[0]
         self.qtyround = self._roundplaces()[1]
     
@@ -58,13 +51,13 @@ class botrack:
                 try:
                     n+=1
                     self.cs.addstr(n,0,str(price)+'                           ')
-                    if price > self.price > self.rack[enum+1]:
-                        n+=1
-                        self.cs.addstr(n,0,'   *                         ')
                     if self.price_up > price > self.price:
                         n+=1
                         self.price_lock = price
                         self.cs.addstr(n,0,'looooooock to sell  '+str(self.price_lock),)
+                    if price > self.price > self.rack[enum+1]:
+                        n+=1
+                        self.cs.addstr(n,0,'   *                         ')
                     if self.price > price > self.price_down:
                         n+=1
                         self.price_lock = price
@@ -121,25 +114,6 @@ class botrack:
             orderId=order_id)
             
     
-    #def calculate_lot_size(self,):
-    #    q*price = (0.5 + (q*buyprice))/fees
-        
-    
-    #def update_time(self):
-    #    # Obtener la hora actual desde el servidor de tiempo
-    #    ntp_client = ntplib.NTPClient()
-    #    response = ntp_client.request('time.windows.com')
-    #    ntp_time = datetime.fromtimestamp(response.tx_time)
-        
-        # Convertir la hora a un formato compatible con Windows
-    #    system_time = ntp_time.strftime('%m/%d/%Y %I:%M:%S %p')
-        
-        # Establecer la hora del sistema en Windows
-    #    win32api.SetSystemTime(int(ntp_time.year), int(ntp_time.month), int(ntp_time.weekday()), int(ntp_time.day), int(ntp_time.hour), int(ntp_time.minute), int(ntp_time.second), 0)
-
-    #    print("La hora del sistema ha sido actualizada a:", system_time)
-
-  
     def _regtrade(self):
         df = pd.DataFrame(columns=['id_orden', 'Fecha y Hora', 'Precio', 'Cantidad', 'Inversion'])
         df.to_csv('reg_trades.csv', index=False)
