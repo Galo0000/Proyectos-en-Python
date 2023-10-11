@@ -1,7 +1,5 @@
 import sys
-sys.path.append( 'C:/Repositorios/Python' )
-sys.path.append( 'H:\Repositorios\Python no github\Bot cryptos' )
-import USERBINANCE
+import userbinance
 from binance.client import Client
 import time
 import pandas as pd
@@ -16,7 +14,7 @@ class botrack:
         # INTERFAZ
         self.cs = cs.initscr()
         # BINACE LOGIN
-        self.client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
+        self.client = Client(userbinance.API_KEY, userbinance.API_SECRET, tld='com')
         self.stablecoin = 'USDT'
         self.volatilcoin = 'ETH'
         self.symbolticker = self.volatilcoin + self.stablecoin
