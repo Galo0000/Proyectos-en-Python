@@ -1,4 +1,4 @@
-import USERBINANCE
+import userbinance
 from binance.client import Client
 #import matplotlib.pyplot as plt
 #from matplotlib.animation import FuncAnimation
@@ -25,7 +25,7 @@ def _roundplaces_():
     return roundplaceinfo
 
 
-client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
+client = Client(userbinance.API_KEY, userbinance.API_SECRET, tld='com')
 
 basecoin = 'USDT'
 tradecoin = 'ETH'
@@ -40,7 +40,7 @@ while 1:
         klines = np.array(client.get_klines(symbol=symbolTicker, interval=Client.KLINE_INTERVAL_4HOUR,limit=200)).astype(np.float64)
     except:
         time.sleep(20)
-        client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
+        client = Client(userbinance.API_KEY, userbinance.API_SECRET, tld='com')
         continue
 
     if len(klines) == 200:

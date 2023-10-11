@@ -3,13 +3,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-sys.path.append( 'C:/Repositorios/Python' )
-sys.path.append( 'H:\Repositorios\Python no github\Bot cryptos' )
-import USERBINANCE
+import userbinance
 from binance.client import Client
 
 # Crea una instancia del cliente de Binance
-client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET)
+client = Client(userbinance.API_KEY, userbinance.API_SECRET)
 
 # Define el par de criptomonedas y el intervalo de tiempo
 symbol = 'BTCUSDT'

@@ -1,14 +1,12 @@
 import sys
-sys.path.append( 'C:/Repositorios/Python' )
-sys.path.append( 'H:/Repositorios/Python no github/Bot cryptos' )
-import USERBINANCE
+import userbinance
 import matplotlib.pyplot as plt
 import pandas as pd
 from mplfinance.original_flavor import candlestick_ohlc
 from binance.client import Client
 import numpy as np
 
-client = Client(USERBINANCE.API_KEY, USERBINANCE.API_SECRET, tld='com')
+client = Client(userbinance.API_KEY, userbinance.API_SECRET, tld='com')
 nl = 100
 rep = 1
 cercania = 3
