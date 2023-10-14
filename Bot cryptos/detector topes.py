@@ -16,12 +16,16 @@ def _truncate_(num,n):
 
 def _roundplaces_():
     symbolinfo = client.get_symbol_info(symbolTicker)
-    decimalprice_local = symbolinfo['filters'][0]['tickSize']
-    roundprice = (decimalprice_local.find('1'))-1
-    decimalqty_local = symbolinfo['filters'][2]['stepSize']
-    roundqty = (decimalqty_local.find('1'))-1
     
-    roundplaceinfo = {'roundprice':roundprice, 'roundqty':roundqty}
+    # Extract tick size and step size
+    tick_size = float(symbolinfo['filters'][0]['tickSize'])
+    step_size = float(symbolinfo['filters'][1]['stepSize'])
+
+    # Calculate the decimal places for price and quantity
+    roundprice = int(-np.log10(tick_size))
+    roundqty = int(-np.log10(step_size))
+
+    roundplaceinfo = {'roundprice': roundprice, 'roundqty': roundqty}
     return roundplaceinfo
 
 
