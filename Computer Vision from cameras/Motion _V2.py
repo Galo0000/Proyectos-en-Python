@@ -1,9 +1,8 @@
 import cv2 as cv
 import os
-import imutils
 import numpy as np
 import time
-import winsound
+#import winsound
 from itertools import cycle
 
 
@@ -32,8 +31,8 @@ def sha(img):
 
 
 test = False
-video = True
-mypc = True
+video = False
+mypc = False
 
 barplayer = []
 b = None
