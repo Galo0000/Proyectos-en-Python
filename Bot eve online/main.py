@@ -20,6 +20,7 @@ while(True):
     
     # get an updated image of the game
     screenshot = wincap.get_screenshot()
+    
     #processed_image = vision_jump.apply_hsv_filter(screenshot)
     #edges_image = vision_jump.apply_edge_filter(processed_image)
     
