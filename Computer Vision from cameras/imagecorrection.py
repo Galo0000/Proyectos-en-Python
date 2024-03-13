@@ -8,8 +8,8 @@ import pytesseract
 pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
 
 
-for file in os.listdir(os.path.join('H:/Repositorios/Python/Camaras homeland/', 'capturas patentes')):
-    imageh = cv2.imread('H:/Repositorios/Python/Camaras homeland/capturas patentes/'+file)
+for file in os.listdir(os.path.join('H:/Repositorios/Python/Camara/', 'capturas patentes')):
+    imageh = cv2.imread('H:/Repositorios/Python/Camara/capturas patentes/'+file)
     image = cv2.resize(imageh,(0,0),fx=5.0,fy=5.0)
     
     plt.imshow(image)

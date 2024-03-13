@@ -30,7 +30,7 @@ def sha(img):
 
 def _saveimg_(img):
     global n
-    cv.imwrite('H:/Repositorios/Python/Camaras homeland/test/test'+str(n)+'.jpg',img)
+    cv.imwrite('H:/Repositorios/Python/Camara/test/test'+str(n)+'.jpg',img)
     n+=1
     
 n = 0
@@ -43,11 +43,11 @@ saveimg = False
 
 if video:
     if mypc:
-        cap = cv.VideoCapture('H:/Repositorios/Python/Camaras homeland/videos homeland/Acceso Principal_20220729_080436~20220729_200550(1).3gp')
+        cap = cv.VideoCapture('H:/Repositorios/Python/Camara/videos/x.3gp')
     else:
-        cap = cv.VideoCapture('C:/ProgramData/VIVOTEK Inc/VAST/Client/PlayBack/Export/Acceso Principal_20220830_083341~20220830_083352.3gp')
+        cap = cv.VideoCapture('C:/ProgramData/../x.3gp')
 else:
-    cap= cv.VideoCapture('rtsp://homeland:Homeland2019@10.10.1.253:3454/Media/Live/Normal?camera=C_2&streamindex=1')# acceso
+    cap= cv.VideoCapture('rtsp://...')
 
 if mypc == True:
     pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'

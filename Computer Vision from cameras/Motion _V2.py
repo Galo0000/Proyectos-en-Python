@@ -8,7 +8,7 @@ from itertools import cycle
 
 def _saveimg_(img):
     global nsave
-    cv.imwrite('D:/Camaras homeland/savescreen/save'+str(nsave)+'.jpg',img)
+    cv.imwrite('D:/Camara/savescreen/save'+str(nsave)+'.jpg',img)
     nsave +=1
 
 def sha(img):
@@ -45,12 +45,12 @@ detectr = False
 
 if video:
     if mypc:
-        cap = cv.VideoCapture('c:/Repositorios/Python/Computer Vision from cameras/videos homeland/Calle Paimun Norte_20220630_082628~20220630_143235.3gp')
+        cap = cv.VideoCapture('c:/Repositorios/Python/Computer Vision from cameras/videos/x.3gp')
     else:
         cap = cv.VideoCapture('')
 else:
-    cap= cv.VideoCapture('rtsp://homeland:Homeland2019@10.10.1.253:3454/Media/Live/Normal?camera=C_28&streamindex=1')# acceso
-    #cap= cv.VideoCapture('rtsp://homeland:Homeland2019@10.10.1.253:3454/Media/Live/Normal?camera=C_3&streamindex=1')
+    cap= cv.VideoCapture('rtsp://...')#
+    #cap= cv.VideoCapture('rtsp://...')
 
 
 nsave = 0
@@ -67,7 +67,7 @@ while True:
         print(str('dlt = '+str(dlt)))
         break
     if test:
-        cap = cv.VideoCapture('H:/Repositorios/Python/Camaras homeland/videos homeland/Acceso Principal_20220729_080436~20220729_200550(2).3gp')
+        cap = cv.VideoCapture('H:/Repositorios/Python/Camara/videos/x.3gp')
     object_detector = cv.createBackgroundSubtractorMOG2(history=100, varThreshold=thd,detectShadows=False)
     while(True):
         ret, img = cap.read()

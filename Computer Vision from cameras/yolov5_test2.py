@@ -16,7 +16,7 @@ def task():
 
 def _saveimg_(img):
     global n
-    cv2.imwrite('D:/Camaras homeland/pat'+str(n)+'.jpg',img)
+    cv2.imwrite('D:/Camara/pat'+str(n)+'.jpg',img)
     n+=1
 
 
@@ -52,20 +52,20 @@ ret = None
 
 if video:
     if mypc:
-        cap = cv2.VideoCapture('H:/Repositorios/Python/Camaras homeland/videos homeland/Acceso Principal_20220728_075644~20220728_195544.3gp')
+        cap = cv2.VideoCapture('H:/Repositorios/Python/Camara/videos/x.3gp')
     else:
-        cap = cv2.VideoCapture('C:/ProgramData/VIVOTEK Inc/VAST/Client/PlayBack/Export/Acceso Principal_20220830_081016~20220830_081029.3gp')
+        cap = cv2.VideoCapture('C:/ProgramData/../x.3gp')
 else:
-    cap= cv2.VideoCapture('rtsp://homeland:Homeland2019@10.10.1.253:3454/Media/Live/Normal?camera=C_2&streamindex=1')
+    cap= cv2.VideoCapture('rtsp://..')
     cap.set(cv2.CAP_PROP_BUFFERSIZE,1)
 
     
 if mypc == True:
     pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
-    model = torch.hub.load('ultralytics/yolov5','custom', path = 'H:/Repositorios/Python/Camaras homeland/bests.pt')
+    model = torch.hub.load('ultralytics/yolov5','custom', path = 'H:/Repositorios/Python/Camara/bests.pt')
 else:
     pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
-    model = torch.hub.load('ultralytics/yolov5','custom', path = 'D:/Camaras homeland/bests.pt')
+    model = torch.hub.load('ultralytics/yolov5','custom', path = 'D:/Camara/bests.pt')
 
 model.conf = 0.85
 #t = th(task)

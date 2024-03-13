@@ -5,7 +5,7 @@ import numpy as np
 modelo_yolo = cv.dnn.readNet('ruta_al_archivo.weights', 'ruta_al_archivo.cfg')
 
 # Inicializar la captura de video
-cap = cv.VideoCapture('rtsp://homeland:Homeland2019@10.10.1.253:3454/Media/Live/Normal?camera=C_3&streamindex=1')
+cap = cv.VideoCapture('rtsp://...')
 
 while True:
     ret, img = cap.read()
